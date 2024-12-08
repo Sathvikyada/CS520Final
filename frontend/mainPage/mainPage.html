@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Page</title>
+  <link rel="stylesheet" href="../mainPage/mainPage.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#" id="create-route-btn">Create Route</a></li>
+        <li><a href="#" id="chat-btn">Community Chat</a></li>
+        <li><a href="#" id="preferences-btn">Preferences</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="content">
+    <!-- Default content to show when no view is selected -->
+    <div id="default-message">
+      <h2>Select an action from the navbar above to get started!</h2>
+    </div>
+
+    <iframe id="content-frame" src="" style="width: 100%; height: 80vh; border: none; display: none;">
+      <!-- The iframe will dynamically load content here -->
+    </iframe>
+  </div>
+
+  <script src="../mainPage/mainPage.js"></script>
+</body>
+</html>
