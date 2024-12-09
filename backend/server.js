@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const path = require('path')
 const authRoutes = require('./routes/auth');
 const preferencesRoutes = require('./routes/preferences');
+const eventRoutes = require('./routes/event')
 
 dotenv.config(); // Load environment variables
 
@@ -30,6 +31,8 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/api/auth', authRoutes.router);
 
 app.use('/api/preferences', preferencesRoutes);
+
+app.use('/api/events', eventRoutes);
 
 // Start the server
 app.listen(port, () => {
