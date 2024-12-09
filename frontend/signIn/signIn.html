@@ -11,34 +11,35 @@
     <h2>Sign In</h2>
     <form id="sign-in-form">
       <label for="username">Username</label>
-      <input type="text" id="username" name="username" required>
+      <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
       <button type="submit">Sign In</button>
     </form>
 
-    <div id="error-message"></div>
+    <div id="error-message" class="message"></div>
 
     <!-- Sign Up Button -->
-    <button id="signup-btn" class="signup-btn">Sign Up</button>
+    <p>Don't have an account? <button id="signup-btn" class="link-btn">Sign Up</button></p>
   </div>
 
   <!-- Sign Up Modal -->
-  <div id="signup-modal" class="modal">
+  <div id="signup-modal" class="modal hidden">
     <div class="modal-content">
       <span class="close-btn" id="close-btn">&times;</span>
       <h3>Sign Up</h3>
       <form id="signup-form">
         <label for="new-username">Username</label>
-        <input type="text" id="new-username" name="new-username" required>
+        <input type="text" id="new-username" name="new-username" placeholder="Choose a username" required>
         
         <label for="new-password">Password</label>
-        <input type="password" id="new-password" name="new-password" required>
+        <input type="password" id="new-password" name="new-password" placeholder="Choose a password" required>
 
         <button type="submit">Sign Up</button>
       </form>
+      <div id="signup-message" class="message"></div>
     </div>
   </div>
 

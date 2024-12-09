@@ -1,41 +1,37 @@
 const express = require('express');
-const path = require('path');
-const { connectMongoDB, closeMongoDBConnection } = require('./mongodb');
-const signinRoutes = require('./routes/signInBackend.js');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const path = require('path')
+const authRoutes = require('./routes/auth');
+const preferencesRoutes = require('./routes/preferences');
+
+dotenv.config(); // Load environment variables
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
+// Middleware
+app.use(express.json()); // To parse incoming JSON requests
 app.use(express.static('../frontend'));
-app.use(express.json());
 
-// Default to Landing page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/landingPage.html'));
 });
 
-app.use('/api/users', signinRoutes);
+// Connect to MongoDB using Mongoose
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-// Function to start the server
-async function startServer() {
-  try {
-    // Connect to MongoDB
-    await connectMongoDB();
+// Use the auth routes for handling login and registration
+app.use('/api/auth', authRoutes.router);
 
-    // Start the Express server
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
-  } catch (err) {
-    console.error("Error starting the server:", err);
-  }
-}
+app.use('/api/preferences', preferencesRoutes);
 
-startServer();
-
-// Close MongoDB connection
-process.on('SIGINT', async () => {
-  await closeMongoDBConnection();
-  console.log("MongoDB connection closed.");
-  process.exit(0);
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
