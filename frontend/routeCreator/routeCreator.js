@@ -449,31 +449,48 @@ document.getElementById("sosButton").addEventListener("click", () => {
  * The SOS is sent to the server, which relays it as an SMS using Textbelt.
  */
 async function sendSOSAlert() {
-    const sosRecipient = "+14019544773"; //placeholder number 
-    const message = "Nightingale: SOS! I need help. Please track my location.";
-    try {
-        const response = await fetch("/api/routeCreator/sos", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                recipient: sosRecipient,
-                message: message,
-            }),
-        });
+    const sosRecipient = localStorage.getItem('emergencyphone'); // Placeholder phone number
+    const message = "SOS! I need help. Please track my location.";
 
-        if (response.ok) {
-            const data = await response.json();
-            alert(data.message); // "SOS alert sent successfully!"
-        } else {
-            const errorData = await response.json();
-            alert(`Failed to send SOS alert: ${errorData.message}`);
-        }
-    } catch (error) {
-        console.error("Error sending SOS alert:", error);
-        alert("An error occurred while sending the SOS alert.");
+    // Check if geolocation is available
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            try {
+                const response = await fetch("/api/routeCreator/sos", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`, 
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        recipient: sosRecipient,
+                        message: `${message} Latitude: ${latitude}, Longitude: ${longitude}`,
+                        location: {
+                            latitude: latitude,
+                            longitude: longitude,
+                        },
+                    }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message); // "SOS alert sent successfully!"
+                } else {
+                    const errorData = await response.json();
+                    alert(`Failed to send SOS alert: ${errorData.message}`);
+                }
+            } catch (error) {
+                console.error("Error sending SOS alert:", error);
+                alert("An error occurred while sending the SOS alert.");
+            }
+        }, function(error) {
+            alert("Failed to retrieve location. Please enable location services.");
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
     }
 }
 
@@ -542,14 +559,12 @@ function trackUserProgress(route) {
                     position.coords.longitude
                 );
 
-                // Check if user is halfway
                 const halfwayPoint = halfwayMarker.getPosition();
                 if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, halfwayPoint) < 50) {
                     sendSMS("You are halfway to your destination.");
                     halfwayMarker.setMap(null); 
                 }
 
-                // Check if user is at the destination
                 const destination = route.end_location;
                 if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, destination) < 50) {
                     sendSMS("You have arrived at your destination.");

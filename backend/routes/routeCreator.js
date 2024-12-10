@@ -10,7 +10,7 @@ const User = require('../models/User');
  * and uses the Textbelt API to send an SMS alert.
  */
 router.post("/sos", authenticate, async (req, res) => {
-  const { recipient, message } = req.body;
+  const { recipient, message, location } = req.body;
   const userId = req.user.userId;
   const user = await User.findById(userId);
   const username = user.username;

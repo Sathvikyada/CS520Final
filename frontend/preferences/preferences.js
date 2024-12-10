@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("contact-phone").value = preferences?.emergencyContact?.phone || '';
       document.getElementById("contact-relationship").value = preferences?.emergencyContact?.relationship || '';
       document.getElementById("user-phone").value = preferences?.phone || '';
+      localStorage.setItem('emergencyphone', preferences?.emergencyContact?.phone);
     } else {
       messageDiv.textContent = "Failed to load preferences.";
     }
