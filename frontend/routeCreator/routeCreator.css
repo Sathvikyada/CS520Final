@@ -19,3 +19,23 @@ div {
 label {
     margin-right: 10px;
 }
+
+#navigationButtonWrapper {
+    display: flex;             /* Enables flexbox for centering */
+    justify-content: center;   /* Horizontally centers the button */
+    margin-top: 20px;          /* Adds space above the button */
+}
+
+#startNavigation {
+    background-color: green;   /* Button color */
+    color: white;              /* Text color */
+    padding: 10px 20px;        /* Button padding */
+    font-size: 16px;           /* Button font size */
+    border: none;              /* Removes button border */
+    border-radius: 5px;        /* Adds rounded corners */
+    cursor: pointer;           /* Changes cursor to pointer on hover */
+}
+
+#startNavigation:hover {
+    background-color: darkgreen; /* Darker green on hover for visual feedback */
+}

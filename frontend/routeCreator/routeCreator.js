@@ -1,9 +1,16 @@
 let map;
 let directionsService;
 let directionsRenderer;
+let currentPositionMarker;
+let sosInterval;
 
+/**
+ * Initializes the Google Map centered at the UMass campus. 
+ * Sets up direction services, route rendering, autocomplete functionality,
+ * emergency box markers, current location tracking, and event marker placement.
+ */
 function initMap() {
-    // initialize map at the view of the umass campus
+    // Initialize the map at the UMass campus
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 42.386, lng: -72.529 },
         zoom: 15,
@@ -11,10 +18,16 @@ function initMap() {
 
     // Initialize directions service and renderer
     directionsService = new google.maps.DirectionsService();
-    directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer = new google.maps.DirectionsRenderer({
+        map: map,
+        polylineOptions: {
+            strokeColor: "red", // Route line color
+            strokeWeight: 5,    // Route line thickness
+        },
+    });
     directionsRenderer.setMap(map);
 
-    //feature that helps the user autocomplete its query search for destination/origin
+    // Autocomplete for start and destination
     const startInput = document.getElementById("start");
     const destinationInput = document.getElementById("destination");
 
@@ -24,11 +37,20 @@ function initMap() {
     autocompleteStart.setFields(["geometry", "name"]);
     autocompleteDestination.setFields(["geometry", "name"]);
 
-    //adds blue markers for emergency boxes
+    // Add blue markers for emergency boxes
     addEmergencyMarkers();
+
+    // Track user's current location
+    trackCurrentLocation();
+
+    //Enables user added event markers
+    enableMarkerPlacement();
 }
 
-//add blue markers on the map for each emergency box (blue light)
+/**
+ * Adds predefined emergency markers to the map with blue icons.
+ * Clicking a marker shows an InfoWindow with the location name.
+ */
 function addEmergencyMarkers() {
     const blueMarkerIcon = "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
 
@@ -165,7 +187,7 @@ function addEmergencyMarkers() {
             position: { lat: box.lat, lng: box.lng },
             map: map,
             title: box.location,
-            icon: blueMarkerIcon, 
+            icon: blueMarkerIcon,
         });
 
         const infoWindow = new google.maps.InfoWindow({
@@ -178,7 +200,173 @@ function addEmergencyMarkers() {
     });
 }
 
-//Finds the best route for the user walking
+/**
+ * Tracks the user's current location and places a green marker on the map.
+ * Updates the marker's position as the user moves.
+ */
+function trackCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const userLatLng = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                // Add or update the user's current location marker
+                if (currentPositionMarker) {
+                    currentPositionMarker.setPosition(userLatLng);
+                } else {
+                    currentPositionMarker = new google.maps.Marker({
+                        position: userLatLng,
+                        map: map,
+                        title: "Your Current Location",
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                        },
+                    });
+                }
+
+                // Center the map on the user's current location
+                map.setCenter(userLatLng);
+            },
+            (error) => {
+                console.error("Error getting user location:", error);
+                alert("Unable to access your location. Please enable location services.");
+            },
+            {
+                enableHighAccuracy: true,
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+let navigationInterval;
+
+/**
+ * Starts navigation by tracking the user's real-time location.
+ * Immediately centers the map on the user's location and sets the zoom level.
+ */
+function startNavigation() {
+    if (navigator.geolocation) {
+        navigationInterval = navigator.geolocation.watchPosition(
+            (position) => {
+                const userLatLng = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                // Create or update the user's current location marker
+                if (currentPositionMarker) {
+                    currentPositionMarker.setPosition(userLatLng);
+                } else {
+                    currentPositionMarker = new google.maps.Marker({
+                        position: userLatLng,
+                        map: map,
+                        title: "Your Current Location",
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                        },
+                    });
+                }
+
+                // Immediately center and zoom the map on the user's location
+                map.setCenter(userLatLng);
+                map.setZoom(18); // Ensure the zoom level is locked
+            },
+            (error) => {
+                console.error("Error tracking location:", error);
+                alert("Unable to access your location. Please enable location services.");
+            },
+            {
+                enableHighAccuracy: true, // Use high accuracy for better tracking
+                maximumAge: 0,            // Do not use cached location
+                timeout: 100000,      
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+
+/**
+ * Stops the navigation process, clears location tracking, resets the map, and input fields.
+ * Hides the navigation button, removes the route from the map, resets the map's center and zoom,
+ * and clears the route information (distance and duration).
+ */
+function stopNavigation() {
+    if (navigationInterval) {
+        // Clear the geolocation watch
+        navigator.geolocation.clearWatch(navigationInterval);
+        navigationInterval = null;
+
+        // Reset zoom and center to the current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLatLng = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    };
+
+                    // Center the map on the user's location and reset zoom
+                    map.setCenter(userLatLng);
+                    map.setZoom(15); // Default zoom level
+                },
+                (error) => {
+                    console.error("Error getting location:", error);
+                    alert("Unable to access your location.");
+                },
+                {
+                    enableHighAccuracy: true,
+                }
+            );
+        }
+
+        // Hide the "Start Navigation" button
+        const startNavButton = document.getElementById("startNavigation");
+        startNavButton.style.display = "none";
+
+        // Clear the route from the map
+        directionsRenderer.setDirections({ routes: [] });
+
+        // Reset the input fields
+        document.getElementById("start").value = "";
+        document.getElementById("destination").value = "";
+
+        // Clear route information (distance and duration)
+        document.getElementById("routeInfo").innerHTML = "";
+
+        alert("Trip ended");
+    }
+}
+
+
+// Show the "Start Navigation" button after creating a route
+function showStartNavigationButton() {
+    const startNavButton = document.getElementById("startNavigation");
+    startNavButton.style.display = "block";
+
+    startNavButton.addEventListener("click", () => {
+        if (startNavButton.innerText === "Start Navigation") {
+            startNavigation();
+            startNavButton.innerText = "Stop Navigation";
+            startNavButton.style.backgroundColor = "red";
+        } else {
+            stopNavigation();
+            startNavButton.innerText = "Start Navigation";
+            startNavButton.style.backgroundColor = "green";
+        }
+    });
+}
+
+/**
+ * Calculates a walking route between the start and destination inputs.
+ * Displays the route on the map and shows distance and duration details.
+ */
 function calculateRoute() {
     const start = document.getElementById("start").value;
     const destination = document.getElementById("destination").value;
@@ -191,22 +379,25 @@ function calculateRoute() {
     const request = {
         origin: start,
         destination: destination,
-        travelMode: google.maps.TravelMode.WALKING, //makes sure the route is for those walking
+        travelMode: google.maps.TravelMode.WALKING, // Walking route
     };
 
     directionsService.route(request, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result);
 
-            // gets the distance and duration so we can display
-            const route = result.routes[0].legs[0]; 
-            const distance = route.distance.text; 
-            const duration = route.duration.text; 
+            // Get route details
+            const route = result.routes[0].legs[0];
+            const distance = route.distance.text;
+            const duration = route.duration.text;
 
-            // Displays the distance and duration
+            // Display distance and duration
             const routeInfo = document.getElementById("routeInfo");
             routeInfo.innerHTML = `<p><strong>Distance:</strong> ${distance}</p>
                                    <p><strong>Duration:</strong> ${duration}</p>`;
+
+            // Show the "Start Navigation" button
+            showStartNavigationButton();
         } else {
             alert("Could not find a route: " + status);
         }
@@ -214,9 +405,238 @@ function calculateRoute() {
 }
 
 
-// Initializes the map and add event listeners
+// Initialize the map and add event listeners
 window.onload = () => {
     initMap();
 
     document.getElementById("findRoute").addEventListener("click", calculateRoute);
 };
+
+//Event listener for sos button along with a check to make sure it was an intended action
+document.getElementById("sosButton").addEventListener("click", () => {
+    if (confirm("Are you sure you want to send an SOS alert?")) {
+        sendSOSAlert();
+        trackLocationForSOS();
+    }
+});
+
+/**
+ * Sends an SOS alert to a predefined recipient with a custom message.
+ * The SOS is sent to the server, which relays it as an SMS using Textbelt.
+ */
+async function sendSOSAlert() {
+    const sosRecipient = "+14019544773"; //placeholder number 
+    const message = "mferreira0330@gmail.com: Nightingale: SOS! I need help. Please track my location.";
+
+    try {
+        const response = await fetch("http://localhost:4000/sos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                recipient: sosRecipient,
+                message: message,
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert(data.message); // "SOS alert sent successfully!"
+        } else {
+            const errorData = await response.json();
+            alert(`Failed to send SOS alert: ${errorData.message}`);
+        }
+    } catch (error) {
+        console.error("Error sending SOS alert:", error);
+        alert("An error occurred while sending the SOS alert.");
+    }
+}
+
+/**
+ * Tracks the user's location specifically for SOS mode.
+ * Updates the server periodically with the user's current coordinates.
+ */
+function trackLocationForSOS() {
+    if (navigator.geolocation) {
+        sosInterval = navigator.geolocation.watchPosition(
+            (position) => {
+                const userLatLng = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+
+                // Update server with the user's current location
+                sendLocationToServer(userLatLng);
+            },
+            (error) => {
+                console.error("Error tracking location for SOS:", error);
+                alert("Unable to track location.");
+            },
+            { enableHighAccuracy: true }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+/**
+ * Sends the user's current location to the server during SOS mode.
+ * This helps maintain real-time tracking for emergencies.
+ * @param {Object} location - Object containing latitude and longitude.
+ */
+async function sendLocationToServer(location) {
+    try {
+        const response = await fetch("http://localhost:4000/update-location", { 
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(location),
+        });
+
+        if (response.ok) {
+            console.log("Location updated successfully.");
+        } else {
+            console.error("Failed to update location:", await response.text());
+        }
+    } catch (error) {
+        console.error("Error updating location on server:", error);
+    }
+}
+
+/**
+ * Tracks the user's progress along a specified route.
+ * Sends SMS alerts when the user is halfway to the destination and upon arrival.
+ * @param {Object} route - The route details returned by Google Maps DirectionsService.
+ */
+function trackUserProgress(route) {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const userLatLng = new google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude
+                );
+
+                // Check if user is halfway
+                const halfwayPoint = halfwayMarker.getPosition();
+                if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, halfwayPoint) < 50) {
+                    sendSMS("You are halfway to your destination.");
+                    halfwayMarker.setMap(null); // Remove marker after notifying
+                }
+
+                // Check if user is at the destination
+                const destination = route.end_location;
+                if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, destination) < 50) {
+                    sendSMS("You have arrived at your destination.");
+                    stopTracking(); // Stop tracking when user reaches destination
+                }
+            },
+            (error) => {
+                console.error("Error tracking user progress:", error);
+            },
+            { enableHighAccuracy: true }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+/**
+ * Sends an SMS notification via the server.
+ * Used for milestones like reaching halfway or the destination.
+ * @param {string} message - The message to be sent via SMS.
+ */
+async function sendSMS(message) {
+    const recipient = "+14019544773"; //placeholder
+    try {
+        const response = await fetch("http://localhost:4000/send-sms", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                recipient: recipient,
+                message: message,
+            }),
+        });
+
+        if (response.ok) {
+            console.log("SMS sent successfully.");
+        } else {
+            console.error("Failed to send SMS:", await response.text());
+        }
+    } catch (error) {
+        console.error("Error sending SMS:", error);
+    }
+}
+
+
+/**
+ * Stops tracking the user's location during SOS or route monitoring.
+ * Clears the geolocation watch and alerts the user that tracking has stopped.
+ */
+function stopTracking() {
+    if (sosInterval) {
+        navigator.geolocation.clearWatch(sosInterval);
+        alert("You have reached your destination. SOS tracking stopped.");
+    }
+}
+
+// Array to store user-added markers
+let userMarkers = [];
+
+/**
+ * Enables users to place custom markers on the map by clicking.
+ * Prompts the user to label the marker and mark it as dangerous or non-dangerous.
+ */
+function enableMarkerPlacement() {
+    // Add a click listener to the map
+    map.addListener("click", (event) => {
+        // Get the clicked location
+        const clickedLocation = event.latLng;
+
+        // Prompt the user for a description
+        const description = prompt("Enter a description for this marker:");
+
+        // If the user cancels or provides no description, do nothing
+        if (!description) return;
+
+        // Ask the user if the event is dangerous
+        const isDangerous = confirm("Is this event dangerous? Click 'OK' for Yes, 'Cancel' for No.");
+
+        // Determine the marker color
+        const markerIcon = isDangerous
+            ? "http://maps.google.com/mapfiles/ms/icons/orange-dot.png" // Orange for dangerous
+            : "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // Yellow for non-dangerous
+
+        // Create a new marker with the chosen icon
+        const marker = new google.maps.Marker({
+            position: clickedLocation,
+            map: map,
+            title: description,
+            icon: markerIcon,
+        });
+
+        // Create an InfoWindow for the marker
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<div>
+                        <strong>Description:</strong> ${description}<br>
+                        <strong>Type:</strong> ${isDangerous ? "Dangerous" : "Non-dangerous"}
+                      </div>`,
+        });
+
+        // Show the InfoWindow when the marker is clicked
+        marker.addListener("click", () => {
+            infoWindow.open(map, marker);
+        });
+
+        // Save the marker and its description
+        userMarkers.push({ marker, description, isDangerous });
+
+        //Log the markers to the console for debugging
+        console.log("Markers:", userMarkers);
+    });
+}
+
