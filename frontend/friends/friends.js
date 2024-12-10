@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('authToken');
-  const friendListContainer = document.getElementById('friend-list'); // Ensure this element exists
-  const successMessageContainer = document.getElementById('success-message'); // Make sure you have an element for success message
+  const friendListContainer = document.getElementById('friend-list');
+  const successMessageContainer = document.getElementById('success-message');
 
   if (!token) {
     alert('You must be logged in to view your friends.');

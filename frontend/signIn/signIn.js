@@ -19,8 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Response:", response); // Log the response object
 
       if (response.ok) {
-        const { token } = await response.json();
+        const { token, username } = await response.json();
         localStorage.setItem('authToken', token); // Save token for later use
+        localStorage.setItem('username', username);
         window.location.href = "../mainPage/mainPage.html"; // Redirect on success
       } else {
         const { message } = await response.json();
