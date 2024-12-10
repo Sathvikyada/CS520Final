@@ -99,13 +99,6 @@ app.post("/update-location", (req, res) => {
   res.status(200).send("Location updated.");
 });
 
-
-// Test endpoint to check if the server is running
-app.get('/test', (req, res) => {
-  console.log("Test endpoint hit!");
-  res.send("Server is running and responding!");
-});
-
 // Function to start the server
 async function startServer() {
   try {

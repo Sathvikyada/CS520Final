@@ -411,7 +411,7 @@ async function sendSOSAlert() {
     const message = "mferreira0330@gmail.com: Nightingale: SOS! I need help. Please track my location.";
 
     try {
-        const response = await fetch("http://localhost:4000/sos", {
+        const response = await fetch("/api/routeCreator/sos", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -468,7 +468,7 @@ function trackLocationForSOS() {
  */
 async function sendLocationToServer(location) {
     try {
-        const response = await fetch("http://localhost:4000/update-location", { 
+        const response = await fetch("/api/routeCreator/update-location", { 
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -532,7 +532,7 @@ function trackUserProgress(route) {
 async function sendSMS(message) {
     const recipient = "+14019544773"; //placeholder
     try {
-        const response = await fetch("http://localhost:4000/send-sms", {
+        const response = await fetch("/api/routeCreator/send-sms", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
