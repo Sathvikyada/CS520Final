@@ -1,0 +1,91 @@
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#map {
+  margin: 20px auto;
+  width: 90%;
+  height: 500px;
+  border: 1px solid #ccc;
+}
+
+div {
+  margin: 10px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+/* Center the navigation button */
+#navigationButtonWrapper {
+  display: flex;             
+  justify-content: center;  
+  margin-top: 20px;          
+}
+
+/* Styling for the navigation button */
+#startNavigation {
+  background-color: green;   
+  color: white;              
+  padding: 10px 20px;       
+  font-size: 16px;           
+  border: none;             
+  border-radius: 5px;        
+  cursor: pointer;           
+}
+
+#startNavigation:hover {
+  background-color: darkgreen; 
+}
+
+/* Hidden class for toggling visibility */
+.hidden {
+  display: none;
+}
+
+/* Styling for route info */
+#routeInfo {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Styling for the map key */
+#mapKey {
+  margin-top: 20px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.mapKeyItem {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.mapKeyItem img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+/* SOS button styles */
+#sosButton {
+  background-color: red;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#sosButton:hover {
+  background-color: darkred;
+}

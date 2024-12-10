@@ -1,14 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Route Creator</title>
-  <link rel="stylesheet" href="./routeCreator.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Creator</title>
+    <link rel="stylesheet" href="routeCreator.css">
+    <script src="routeCreator.js" defer></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSAlFpyVFwlwMp74TSZAww9isva9ubp1E&libraries=places,geometry"
+        defer>
+    </script>
 </head>
 <body>
-  <h1>COMING SOON</h1>
-
-  <script src="routeCreator.js"></script>
+    <h1>Route Creator</h1>
+    <div>
+        <label for="start">Start Location:</label>
+        <input type="text" id="start" placeholder="Enter start location">
+    </div>
+    <div>
+        <label for="destination">Destination:</label>
+        <input type="text" id="destination" placeholder="Enter destination">
+    </div>
+    <button type="button" id="findRoute">Find Route</button>
+    <div id="navigationButtonWrapper">
+        <button type="button" id="startNavigation" class="hidden">
+            Start Navigation
+        </button>
+    </div>
+    <div id="map"></div>
+    <div id="routeInfo"></div>
+    <div id="mapKey">
+        <div class="mapKeyItem">
+            <img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png" alt="Emergency Box Icon">
+            <p>Blue Marker: Emergency Box</p>
+        </div>
+        <div class="mapKeyItem">
+            <img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png" alt="Event Icon">
+            <p>Yellow Marker: Event</p>
+        </div>
+        <div class="mapKeyItem">
+            <img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png" alt="Dangerous Event Icon">
+            <p>Orange Marker: Dangerous Event</p>
+        </div>
+        <div class="mapKeyItem">
+            <img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png" alt="Current Location Icon">
+            <p>Green Marker: Current Location</p>
+        </div>
+    </div>
+    <button type="button" id="sosButton">
+        SOS
+    </button>
 </body>
 </html>
