@@ -10,19 +10,17 @@ let sosInterval;
  * emergency box markers, current location tracking, and event marker placement.
  */
 function initMap() {
-    // Initialize the map at the UMass campus
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 42.386, lng: -72.529 },
         zoom: 15,
     });
 
-    // Initialize directions service and renderer
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer({
         map: map,
         polylineOptions: {
-            strokeColor: "red", // Route line color
-            strokeWeight: 5,    // Route line thickness
+            strokeColor: "red", 
+            strokeWeight: 5,   
         },
     });
     directionsRenderer.setMap(map);
@@ -213,7 +211,6 @@ function trackCurrentLocation() {
                     lng: position.coords.longitude,
                 };
 
-                // Add or update the user's current location marker
                 if (currentPositionMarker) {
                     currentPositionMarker.setPosition(userLatLng);
                 } else {
@@ -227,7 +224,6 @@ function trackCurrentLocation() {
                     });
                 }
 
-                // Center the map on the user's current location
                 map.setCenter(userLatLng);
             },
             (error) => {
@@ -258,7 +254,6 @@ function startNavigation() {
                     lng: position.coords.longitude,
                 };
 
-                // Create or update the user's current location marker
                 if (currentPositionMarker) {
                     currentPositionMarker.setPosition(userLatLng);
                 } else {
@@ -271,18 +266,17 @@ function startNavigation() {
                         },
                     });
                 }
-
-                // Immediately center and zoom the map on the user's location
+                
                 map.setCenter(userLatLng);
-                map.setZoom(18); // Ensure the zoom level is locked
+                map.setZoom(18); 
             },
             (error) => {
                 console.error("Error tracking location:", error);
                 alert("Unable to access your location. Please enable location services.");
             },
             {
-                enableHighAccuracy: true, // Use high accuracy for better tracking
-                maximumAge: 0,            // Do not use cached location
+                enableHighAccuracy: true,
+                maximumAge: 0,            
                 timeout: 100000,      
             }
         );
@@ -299,11 +293,9 @@ function startNavigation() {
  */
 function stopNavigation() {
     if (navigationInterval) {
-        // Clear the geolocation watch
         navigator.geolocation.clearWatch(navigationInterval);
         navigationInterval = null;
 
-        // Reset zoom and center to the current location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -312,9 +304,8 @@ function stopNavigation() {
                         lng: position.coords.longitude,
                     };
 
-                    // Center the map on the user's location and reset zoom
                     map.setCenter(userLatLng);
-                    map.setZoom(15); // Default zoom level
+                    map.setZoom(15); 
                 },
                 (error) => {
                     console.error("Error getting location:", error);
@@ -326,18 +317,12 @@ function stopNavigation() {
             );
         }
 
-        // Hide the "Start Navigation" button
         const startNavButton = document.getElementById("startNavigation");
         startNavButton.style.display = "none";
 
-        // Clear the route from the map
         directionsRenderer.setDirections({ routes: [] });
-
-        // Reset the input fields
         document.getElementById("start").value = "";
         document.getElementById("destination").value = "";
-
-        // Clear route information (distance and duration)
         document.getElementById("routeInfo").innerHTML = "";
 
         alert("Trip ended");
@@ -386,17 +371,14 @@ function calculateRoute() {
         if (status === google.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result);
 
-            // Get route details
             const route = result.routes[0].legs[0];
             const distance = route.distance.text;
             const duration = route.duration.text;
 
-            // Display distance and duration
             const routeInfo = document.getElementById("routeInfo");
             routeInfo.innerHTML = `<p><strong>Distance:</strong> ${distance}</p>
                                    <p><strong>Duration:</strong> ${duration}</p>`;
 
-            // Show the "Start Navigation" button
             showStartNavigationButton();
         } else {
             alert("Could not find a route: " + status);
@@ -466,7 +448,6 @@ function trackLocationForSOS() {
                     lng: position.coords.longitude,
                 };
 
-                // Update server with the user's current location
                 sendLocationToServer(userLatLng);
             },
             (error) => {
@@ -523,14 +504,14 @@ function trackUserProgress(route) {
                 const halfwayPoint = halfwayMarker.getPosition();
                 if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, halfwayPoint) < 50) {
                     sendSMS("You are halfway to your destination.");
-                    halfwayMarker.setMap(null); // Remove marker after notifying
+                    halfwayMarker.setMap(null); 
                 }
 
                 // Check if user is at the destination
                 const destination = route.end_location;
                 if (google.maps.geometry.spherical.computeDistanceBetween(userLatLng, destination) < 50) {
                     sendSMS("You have arrived at your destination.");
-                    stopTracking(); // Stop tracking when user reaches destination
+                    stopTracking(); 
                 }
             },
             (error) => {
@@ -594,24 +575,18 @@ let userMarkers = [];
 function enableMarkerPlacement() {
     // Add a click listener to the map
     map.addListener("click", (event) => {
-        // Get the clicked location
         const clickedLocation = event.latLng;
-
-        // Prompt the user for a description
         const description = prompt("Enter a description for this marker:");
 
         // If the user cancels or provides no description, do nothing
         if (!description) return;
 
-        // Ask the user if the event is dangerous
         const isDangerous = confirm("Is this event dangerous? Click 'OK' for Yes, 'Cancel' for No.");
 
-        // Determine the marker color
         const markerIcon = isDangerous
             ? "http://maps.google.com/mapfiles/ms/icons/orange-dot.png" // Orange for dangerous
             : "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // Yellow for non-dangerous
 
-        // Create a new marker with the chosen icon
         const marker = new google.maps.Marker({
             position: clickedLocation,
             map: map,
@@ -619,7 +594,6 @@ function enableMarkerPlacement() {
             icon: markerIcon,
         });
 
-        // Create an InfoWindow for the marker
         const infoWindow = new google.maps.InfoWindow({
             content: `<div>
                         <strong>Description:</strong> ${description}<br>
@@ -627,12 +601,10 @@ function enableMarkerPlacement() {
                       </div>`,
         });
 
-        // Show the InfoWindow when the marker is clicked
         marker.addListener("click", () => {
             infoWindow.open(map, marker);
         });
 
-        // Save the marker and its description
         userMarkers.push({ marker, description, isDangerous });
 
         //Log the markers to the console for debugging
