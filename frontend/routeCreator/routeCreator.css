@@ -4,43 +4,82 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
 }
 
-#map {
-  margin: 20px auto;
-  width: 90%;
-  height: 500px;
-  border: 1px solid #ccc;
+/* Content container */
+.content {
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  text-align: center;
 }
 
-div {
-  margin: 10px;
+/* Heading styles */
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-label {
-  margin-right: 10px;
+/* Styling for input fields and buttons */
+input[type="text"], button {
+  font-size: 1rem;
+  padding: 12px 20px;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 15px;
+  box-sizing: border-box; /* Ensures padding is included in width calculation */
+}
+
+/* Styling for input fields */
+input[type="text"] {
+  border: 2px solid #ddd;
+}
+
+input[type="text"]:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+/* Styling for the 'Find Route' button */
+#findRoute {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#findRoute:hover {
+  background-color: #45a049;
 }
 
 /* Center the navigation button */
 #navigationButtonWrapper {
-  display: flex;             
-  justify-content: center;  
-  margin-top: 20px;          
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-/* Styling for the navigation button */
+/* Styling for the 'Start Navigation' button */
 #startNavigation {
-  background-color: green;   
-  color: white;              
-  padding: 10px 20px;       
-  font-size: 16px;           
-  border: none;             
-  border-radius: 5px;        
-  cursor: pointer;           
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
 }
 
 #startNavigation:hover {
-  background-color: darkgreen; 
+  background-color: darkgreen;
 }
 
 /* Hidden class for toggling visibility */
@@ -59,13 +98,15 @@ label {
   margin-top: 20px;
   font-size: 16px;
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .mapKeyItem {
   display: flex;
   align-items: center;
   margin-right: 20px;
+  margin-bottom: 10px;
 }
 
 .mapKeyItem img {
@@ -84,8 +125,144 @@ label {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width: 100%;
+  max-width: 400px;
 }
 
 #sosButton:hover {
   background-color: darkred;
+}
+
+/* Map container styles */
+#map {
+  margin: 20px auto;
+  width: 90%;
+  height: 500px;
+  border: 1px solid #ccc;
+}
+
+#markerModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  width: 300px;
+}
+
+/* Modal container styling */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  width: 300px;
+  box-sizing: border-box;
+}
+
+/* Input and label styling */
+.modal label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.modal input[type="text"] {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Buttons container */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Button styling */
+.modal-buttons {
+  display: flex;
+  justify-content: center; /* Centers the buttons horizontally */
+  gap: 10px; /* Adds space between the buttons */
+  margin-top: 15px; /* Adds space above the buttons */
+}
+
+/* Button styling */
+.modal-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#saveMarker {
+  background-color: #4CAF50; /* Green for save */
+  color: white;
+}
+
+#cancelMarker {
+  background-color: #f44336; /* Red for cancel */
+  color: white;
+}
+
+/* Notification container for top-left display */
+.notification-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: auto;
+  max-width: 300px;
+  z-index: 1000;
+  text-align: left;
+}
+
+/* Individual notification */
+.notification {
+  background-color: #f0f0f0;
+  border-left: 5px solid #4CAF50; /* Green for success */
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  animation: fadeInOut 5s ease-out;
+  word-wrap: break-word;
+}
+
+/* Notification types */
+.notification.error {
+  border-left-color: #f44336; /* Red for error */
+}
+
+/* Animation for fade in/out */
+@keyframes fadeInOut {
+  0% {
+      opacity: 0;
+      transform: translateX(-20px);
+  }
+  10%, 90% {
+      opacity: 1;
+      transform: translateX(0);
+  }
+  100% {
+      opacity: 0;
+      transform: translateX(-20px);
+  }
 }

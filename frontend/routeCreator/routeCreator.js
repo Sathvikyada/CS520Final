@@ -3,6 +3,7 @@ let directionsService;
 let directionsRenderer;
 let currentPositionMarker;
 let sosInterval;
+const token = localStorage.getItem('authToken');
 
 /**
  * Initializes the Google Map centered at the UMass campus. 
@@ -12,7 +13,7 @@ let sosInterval;
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 42.386, lng: -72.529 },
-        zoom: 15,
+        zoom: 17,
     });
 
     directionsService = new google.maps.DirectionsService();
@@ -43,7 +44,16 @@ function initMap() {
 
     //Enables user added event markers
     enableMarkerPlacement();
+
+     // Fetch and add event markers to the map
+     fetchAndAddEventMarkers();
+
 }
+
+window.onload = () => {
+    initMap();
+    document.getElementById("findRoute").addEventListener("click", calculateRoute);
+};
 
 /**
  * Adds predefined emergency markers to the map with blue icons.
@@ -268,7 +278,7 @@ function startNavigation() {
                 }
                 
                 map.setCenter(userLatLng);
-                map.setZoom(18); 
+                map.setZoom(17); 
             },
             (error) => {
                 console.error("Error tracking location:", error);
@@ -309,7 +319,7 @@ function stopNavigation() {
                 },
                 (error) => {
                     console.error("Error getting location:", error);
-                    alert("Unable to access your location.");
+                    showNotification("Unable to access your location.", "error");
                 },
                 {
                     enableHighAccuracy: true,
@@ -318,15 +328,41 @@ function stopNavigation() {
         }
 
         const startNavButton = document.getElementById("startNavigation");
-        startNavButton.style.display = "none";
+        startNavButton.style.display = "none"; // Hide the button initially
+        startNavButton.innerText = "Start Navigation"; // Reset text
+        startNavButton.style.backgroundColor = "green"; // Reset style
 
         directionsRenderer.setDirections({ routes: [] });
         document.getElementById("start").value = "";
         document.getElementById("destination").value = "";
         document.getElementById("routeInfo").innerHTML = "";
 
-        alert("Trip ended");
+        showNotification("Trip ended", "success");
     }
+}
+
+
+
+/**
+ * Displays a notification message in the UI.
+ * @param {string} message - The notification message to display.
+ * @param {string} type - The type of notification: "success" or "error".
+ */
+function showNotification(message, type = "success") {
+    const notificationContainer = document.getElementById("notificationContainer");
+
+    // Create notification element
+    const notification = document.createElement("div");
+    notification.className = `notification ${type}`;
+    notification.innerText = message;
+
+    // Append notification to the container
+    notificationContainer.appendChild(notification);
+
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
 }
 
 
@@ -335,18 +371,24 @@ function showStartNavigationButton() {
     const startNavButton = document.getElementById("startNavigation");
     startNavButton.style.display = "block";
 
-    startNavButton.addEventListener("click", () => {
-        if (startNavButton.innerText === "Start Navigation") {
+    // Remove existing event listeners to prevent duplicate handlers
+    const newButton = startNavButton.cloneNode(true);
+    startNavButton.parentNode.replaceChild(newButton, startNavButton);
+
+    // Add new event listener
+    newButton.addEventListener("click", () => {
+        if (newButton.innerText === "Start Navigation") {
             startNavigation();
-            startNavButton.innerText = "Stop Navigation";
-            startNavButton.style.backgroundColor = "red";
+            newButton.innerText = "Stop Navigation";
+            newButton.style.backgroundColor = "red";
         } else {
             stopNavigation();
-            startNavButton.innerText = "Start Navigation";
-            startNavButton.style.backgroundColor = "green";
+            newButton.innerText = "Start Navigation";
+            newButton.style.backgroundColor = "green";
         }
     });
 }
+
 
 /**
  * Calculates a walking route between the start and destination inputs.
@@ -408,12 +450,12 @@ document.getElementById("sosButton").addEventListener("click", () => {
  */
 async function sendSOSAlert() {
     const sosRecipient = "+14019544773"; //placeholder number 
-    const message = "mferreira0330@gmail.com: Nightingale: SOS! I need help. Please track my location.";
-
+    const message = "Nightingale: SOS! I need help. Please track my location.";
     try {
         const response = await fetch("/api/routeCreator/sos", {
             method: "POST",
             headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
@@ -573,41 +615,143 @@ let userMarkers = [];
  * Prompts the user to label the marker and mark it as dangerous or non-dangerous.
  */
 function enableMarkerPlacement() {
-    // Add a click listener to the map
+    const modal = document.getElementById("markerModal");
+    const saveButton = document.getElementById("saveMarker");
+    const cancelButton = document.getElementById("cancelMarker");
+    const descriptionInput = document.getElementById("markerDescription");
+    const dangerCheckbox = document.getElementById("isDangerous");
+
+    let clickedLocation = null;
+
     map.addListener("click", (event) => {
-        const clickedLocation = event.latLng;
-        const description = prompt("Enter a description for this marker:");
+        clickedLocation = event.latLng;
+        modal.style.display = "block";
+    });
 
-        // If the user cancels or provides no description, do nothing
-        if (!description) return;
+    saveButton.addEventListener("click", async () => {
+        const title = descriptionInput.value.trim();
+        const dangerous = dangerCheckbox.checked;
 
-        const isDangerous = confirm("Is this event dangerous? Click 'OK' for Yes, 'Cancel' for No.");
-
-        const markerIcon = isDangerous
-            ? "http://maps.google.com/mapfiles/ms/icons/orange-dot.png" // Orange for dangerous
-            : "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // Yellow for non-dangerous
+        if (!title) {
+            showNotification("Description is required.", "error");
+            return;
+        }
 
         const marker = new google.maps.Marker({
             position: clickedLocation,
             map: map,
-            title: description,
-            icon: markerIcon,
+            title: title,
+            icon: dangerous
+                ? "http://maps.google.com/mapfiles/ms/icons/orange-dot.png"
+                : "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
         });
 
         const infoWindow = new google.maps.InfoWindow({
-            content: `<div>
-                        <strong>Description:</strong> ${description}<br>
-                        <strong>Type:</strong> ${isDangerous ? "Dangerous" : "Non-dangerous"}
-                      </div>`,
+            content: `<div><strong>Description:</strong> ${title}<br><strong>Type:</strong> ${dangerous ? "Dangerous" : "Non-dangerous"}</div>`,
         });
 
-        marker.addListener("click", () => {
-            infoWindow.open(map, marker);
-        });
+        marker.addListener("click", () => infoWindow.open(map, marker));
+        userMarkers.push({ marker, title, dangerous });
 
-        userMarkers.push({ marker, description, isDangerous });
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('You must be logged in to view events.');
+            window.location.href = '../signIn/signIn.html'; // Redirect to sign-in page
+            return;
+        }
 
-        //Log the markers to the console for debugging
-        console.log("Markers:", userMarkers);
+        const eventData = {
+            title,
+            location: {
+                latitude: clickedLocation.lat(),
+                longitude: clickedLocation.lng(),
+            },
+            dangerous,
+          };
+
+        // Save marker to the database
+        try {
+            const response = await fetch('/api/events/create', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`, // Add the token to the Authorization header
+                },
+                body: JSON.stringify(eventData),  // Send the event data in the request body
+             });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showNotification("Marker saved successfully.", "success");
+            } else {
+                showNotification(`Error saving marker: ${result.message}`, "error");
+            }
+        } catch (error) {
+            console.error("Error saving marker:", error);
+            showNotification("Error saving marker to database.", "error");
+        }
+
+        descriptionInput.value = "";
+        dangerCheckbox.checked = false;
+        modal.style.display = "none";
     });
+
+    cancelButton.addEventListener("click", () => {
+        descriptionInput.value = "";
+        dangerCheckbox.checked = false;
+        modal.style.display = "none";
+    });
+}
+
+async function fetchAndAddEventMarkers() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('You must be logged in to view events.');
+        window.location.href = '../signIn/signIn.html'; // Redirect to sign-in page
+        return;
+    }
+
+    try {
+        // Fetch all events with authentication
+        const response = await fetch('/api/events', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch events');
+        }
+
+        const events = await response.json();
+
+        // Add markers for each event
+        events.forEach(event => {
+            const markerIcon = event.dangerous
+                ? "http://maps.google.com/mapfiles/ms/icons/orange-dot.png" // Orange for dangerous
+                : "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"; // Yellow for non-dangerous
+
+            const marker = new google.maps.Marker({
+                position: { lat: event.location.latitude, lng: event.location.longitude },
+                map: map,
+                title: event.title,
+                icon: markerIcon,
+            });
+
+            // InfoWindow with event details
+            const infoWindow = new google.maps.InfoWindow({
+                content: `<div>
+                            <h3>${event.title}</h3>
+                            <p><strong>Type:</strong> ${event.dangerous ? "Dangerous" : "Non-dangerous"}</p>
+                            <p><strong>Upvotes:</strong> ${event.upvotes || 0}</p>
+                          </div>`,
+            });
+
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+            });
+        });
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        alert("Failed to load events. Please try again.");
+    }
 }

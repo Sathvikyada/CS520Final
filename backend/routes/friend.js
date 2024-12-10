@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const { authenticate } = require('./auth'); // Assuming you already have an authentication middleware
+const axios = require('axios'); // For making HTTP requests to Textbelt
 const router = express.Router();
 
 // Add a friend by username
@@ -60,6 +61,38 @@ router.get('/list', authenticate, async (req, res) => {
   } catch (err) {
     console.error('Error fetching friends:', err);
     res.status(500).json({ message: 'Failed to load friends list.' });
+  }
+});
+
+// Send location to a friend via SMS
+router.post('/send-location', authenticate, async (req, res) => {
+  const { phone, location } = req.body;
+
+  if (!phone || !location) {
+    return res.status(400).json({ message: 'Phone number and location are required.' });
+  }
+
+  try {
+    // Get the username of the person sharing their location
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    const username = user.username;
+
+    // Use Textbelt API to send the SMS
+    const response = await axios.post('https://textbelt.com/text', {
+      phone,
+      message: `${username} is sharing their location: Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
+      key: '1e0ddc3431392f525eb4ec0e91f43b55dcc3eeb2ouhe4iccwOX3UayweBNBx1EHG',
+    });
+
+    if (response.data.success) {
+      res.status(200).json({ message: 'Location sent successfully!' });
+    } else {
+      res.status(500).json({ message: `Failed to send location: ${response.data.error}` });
+    }
+  } catch (error) {
+    console.error('Error sending location:', error);
+    res.status(500).json({ message: 'Internal server error.' });
   }
 });
 

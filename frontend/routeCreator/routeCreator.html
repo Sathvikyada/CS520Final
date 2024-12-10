@@ -50,5 +50,19 @@
     <button type="button" id="sosButton">
         SOS
     </button>
+    <div id="markerModal" class="modal">
+        <h3>Add Marker</h3>
+        <label for="markerDescription">Description:</label>
+        <input type="text" id="markerDescription" >
+        <label>
+            <input type="checkbox" id="isDangerous" >
+            Mark as Dangerous
+        </label>
+        <div class="modal-buttons">
+            <button type="button" id="saveMarker">Save</button>
+            <button type="button" id="cancelMarker">Cancel</button>
+        </div>
+    </div>
+    <div id="notificationContainer" class="notification-container"></div>
 </body>
 </html>

@@ -1,14 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const axios = require("axios");
+const { authenticate } = require('./auth');
+const User = require('../models/User');
 
 /**
  * Handles the initial SOS alert sent by the user.
  * Accepts a recipient's phone number and a message in the request body, 
  * and uses the Textbelt API to send an SMS alert.
  */
-router.post("/sos", async (req, res) => {
+router.post("/sos", authenticate, async (req, res) => {
   const { recipient, message } = req.body;
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  const username = user.username;
 
   if (!recipient || !message) {
       return res.status(400).json({ message: "Recipient and message are required." });
@@ -18,7 +23,7 @@ router.post("/sos", async (req, res) => {
       // API request to send SMS
       const response = await axios.post("https://textbelt.com/text", {
           phone: recipient,
-          message: message,
+          message: `${username} : ${message} Latitude: ${location.latitude}, Longitude: ${location.longitude}`,
           key: '1e0ddc3431392f525eb4ec0e91f43b55dcc3eeb2ouhe4iccwOX3UayweBNBx1EHG', // Textbelt api
       });
 
@@ -38,7 +43,7 @@ router.post("/sos", async (req, res) => {
 * Accepts a recipient's phone number and a message in the request body,
 * and uses the Textbelt API to send the SMS.
 */
-router.post("/send-sms", async (req, res) => {
+router.post("/send-sms", authenticate, async (req, res) => {
 const { recipient, message } = req.body;
 
 if (!recipient || !message) {
