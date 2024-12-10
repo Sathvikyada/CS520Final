@@ -15,6 +15,36 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Create a new event
+router.post('/create', authenticate, async (req, res) => {
+  const { title, location, dangerous } = req.body;
+
+  // Validate request body
+  if (!title || !location || !location.latitude || !location.longitude) {
+    return res.status(400).json({ message: 'Missing required fields.' });
+  }
+
+  try {
+    // Create a new event document
+    const newEvent = new Event({
+      title,
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+      },
+      dangerous: dangerous || false, // Default to false if not provided
+    });
+
+    // Save the event to the database
+    await newEvent.save();
+
+    res.status(201).json({ message: 'Event created successfully.', event: newEvent });
+  } catch (err) {
+    console.error('Error creating event:', err);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
 
 // Upvote an event
 router.post('/:eventId/upvote', authenticate, async (req, res) => {

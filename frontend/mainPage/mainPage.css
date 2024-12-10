@@ -8,7 +8,7 @@
 /* Body and page layout */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #F1F0E8; /* Light theme background */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,14 +18,40 @@ body {
 /* Navbar styling */
 header {
   width: 100%;
-  background-color: #4CAF50;
+  background-color: #678B9C; /* Blue navbar */
   padding: 15px 0;
+  display: flex;
+  justify-content: center; /* Center the entire nav content */
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  width: 100%;
+  max-width: 1200px; /* Optional: restrict max width */
+  justify-content: space-between; /* Space out brand name and links */
+  align-items: center;
+}
+
+.navbar-left {
+  flex-shrink: 0; /* Prevent it from shrinking */
+}
+
+.navbar-brand {
+  color: white;
+  font-size: 24px; /* Adjust font size for the brand name */
+  font-weight: bold;
+}
+
+.navbar-center {
+  flex-grow: 1; /* Allow the center area to grow */
 }
 
 nav ul {
   list-style-type: none;
   display: flex;
   justify-content: center;
+  margin: 0;
 }
 
 nav ul li {
@@ -43,33 +69,69 @@ nav ul li a:hover {
   text-decoration: underline;
 }
 
-/* Content area */
+/* Container styling for content */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding: 20px;
+}
+
 .content {
   text-align: center;
   padding: 40px;
   width: 100%;
   max-width: 800px;
+  background-color: #E5E1DA;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.content h1 {
-  font-size: 2.5em;
+.content h2 {
+  font-size: 2em;
   margin-bottom: 20px;
-  color: #333;
+  color: #678B9C;
 }
 
 .content p {
   font-size: 1.2em;
-  color: #555;
+  color: #6D6D6D; 
 }
 
-/* Ensure the page is responsive */
+.navbar-right {
+  margin-left: auto; /* Push logout button to the right */
+  display: flex;
+  align-items: center;
+}
+
+/* Style for the logout button */
+#logout-btn {
+  color: white; /* Text color */
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: transparent; /* Transparent background */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+#logout-btn:hover {
+  background-color: #e53935;
+  color: white;
+  text-decoration: underline;
+}
+
+/* Page responsiveness */
 @media (max-width: 768px) {
   .content {
     padding: 20px;
   }
 
-  .content h1 {
-    font-size: 2em;
+  .content h2 {
+    font-size: 1.8em;
   }
 
   nav ul {

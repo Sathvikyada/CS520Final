@@ -58,12 +58,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (response.ok) {
         messageDiv.textContent = "Preferences saved successfully.";
+        messageDiv.className = 'success';
       } else {
         messageDiv.textContent = "Failed to save preferences.";
+        messageDiv.className = 'error';
       }
     } catch (err) {
       console.error('Error saving preferences:', err);
       messageDiv.textContent = "An error occurred. Please try again.";
+      messageDiv.className = 'error';
     }
   });
 });

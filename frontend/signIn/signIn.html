@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./signIn.css">
 </head>
 <body>
   <div class="container">
@@ -21,12 +21,11 @@
 
     <div id="error-message" class="message"></div>
 
-    <!-- Sign Up Button -->
     <p>Don't have an account? <button id="signup-btn" class="link-btn">Sign Up</button></p>
   </div>
 
   <!-- Sign Up Modal -->
-  <div id="signup-modal" class="modal hidden">
+  <div id="signup-modal" class="modal">
     <div class="modal-content">
       <span class="close-btn" id="close-btn">&times;</span>
       <h3>Sign Up</h3>
@@ -42,6 +41,7 @@
       <div id="signup-message" class="message"></div>
     </div>
   </div>
+
 
   <script src="./signIn.js"></script>
 </body>

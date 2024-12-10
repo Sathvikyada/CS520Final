@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       eventCard.innerHTML = `
         <h3>${event.title}</h3>
         ${dangerBadge}
-        <p>${event.description}</p>
         <p>Location: (${event.location.latitude}, ${event.location.longitude})</p>
         <p>Upvotes: <span id="upvote-count-${event._id}">${event.upvotes}</span></p>
         <button class="upvote-btn" data-id="${event._id}">Upvote</button>

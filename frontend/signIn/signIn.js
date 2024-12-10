@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-    
+
       console.log("Response:", response); // Log the response object
-    
+
       if (response.ok) {
         const { token } = await response.json();
         localStorage.setItem('authToken', token); // Save token for later use
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Error during login:", err); // Log any other errors
       errorMessage.textContent = "An error occurred. Please try again."; // Generic error message
-    }    
+    }
   });
 
   // Show Sign Up modal
@@ -46,6 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.addEventListener("click", () => {
     signupModal.classList.remove("show"); // Remove show class to hide modal
     signupModal.classList.add("hidden"); // Add hidden class to hide modal
+  });
+
+  // Close modal on outside click
+  window.addEventListener("click", (e) => {
+    if (e.target === signupModal) {
+      signupModal.classList.remove("show");
+      signupModal.classList.add("hidden");
+    }
   });
 
   // Sign Up form submission
@@ -68,16 +76,24 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         signupMessage.textContent = "Registration successful! Please log in.";
         signupMessage.classList.add("success");
+        signupMessage.classList.remove("error");
         signupForm.reset();
-        signupModal.classList.remove("show"); // Hide modal after registration
-        signupModal.classList.add("hidden");
+
+        // Hide modal after registration
+        setTimeout(() => {
+          signupModal.classList.remove("show");
+          signupModal.classList.add("hidden");
+          signupMessage.textContent = ""; // Clear success message
+        }, 2000);
       } else {
         const { message } = await response.json();
         signupMessage.textContent = message || "Registration failed.";
+        signupMessage.classList.add("error");
         signupMessage.classList.remove("success");
       }
     } catch (err) {
       signupMessage.textContent = "An error occurred. Please try again.";
+      signupMessage.classList.add("error");
       signupMessage.classList.remove("success");
     }
   });

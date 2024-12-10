@@ -2,9 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const createRouteButton = document.getElementById("create-route-btn");
   const preferencesButton = document.getElementById("preferences-btn");
   const chatButton = document.getElementById("chat-btn");
+  const logoutButton = document.getElementById("logout-btn");
 
   const iframe = document.getElementById("content-frame");
   const defaultMessage = document.getElementById("default-message");
+
+    iframe.style.display = "block";
+    iframe.src = "../routeCreator/routeCreator.html";
+  
+    // Hide the default message when the page loads
+    defaultMessage.style.display = "none";
 
   // Event listeners for the navbar buttons
   createRouteButton.addEventListener("click", () => {
@@ -23,5 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
     defaultMessage.style.display = "none";  // Hide the default message
     iframe.style.display = "block";         // Show the iframe
     iframe.src = "../communityChat/communityChat.html"; // Load Community Chat page
+  });
+
+  logoutButton.addEventListener("click", () => {
+    // Clear authentication token from localStorage
+    localStorage.removeItem('authToken');
+
+    // Redirect to the login page
+    window.location.href = "../landingPage.html";
   });
 });

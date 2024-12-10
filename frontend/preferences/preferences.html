@@ -7,22 +7,23 @@
   <link rel="stylesheet" href="./preferences.css">
 </head>
 <body>
-  <div class="container">
-    <h2>Preferences</h2>
-    <form id="preferences-form">
+  <div class="content">
+    <h1>User Preferences</h1>
+    <form id="preferences-form" class="preferences-form">
       <label for="contact-name">Emergency Contact Name</label>
-      <input type="text" id="contact-name" name="contact-name" placeholder="Enter contact name">
+      <input type="text" id="contact-name" name="contact-name" placeholder="Enter contact name" required>
 
       <label for="contact-phone">Emergency Contact Phone</label>
-      <input type="text" id="contact-phone" name="contact-phone" placeholder="Enter contact phone">
+      <input type="text" id="contact-phone" name="contact-phone" placeholder="Enter contact phone" required>
 
       <label for="contact-relationship">Relationship</label>
-      <input type="text" id="contact-relationship" name="contact-relationship" placeholder="Enter relationship">
+      <input type="text" id="contact-relationship" name="contact-relationship" placeholder="Enter relationship" required>
 
-      <button type="submit">Save Preferences</button>
+      <button type="submit" class="submit-btn">Save Preferences</button>
     </form>
-    <div id="message"></div>
+    <div id="message" class="message"></div>
   </div>
+
   <script src="./preferences.js"></script>
 </body>
 </html>
