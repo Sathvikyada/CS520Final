@@ -22,5 +22,4 @@ Before running the project, configure the following settings.
 - MONGO_URI=mongodb+srv://GraderAccess:GraderAccess@userdata.ilnbl.mongodb.net/?retryWrites=true&w=majority&appName=UserData  # Database URI for MongoDB
 - JWT_SECRET=jwt_secret # Secret key for JWT authentication
 
-2. External API Keys
-Some features may require external APIs (e.g., for maps or messaging). Add the necessary API keys to config/apiKeys.js and ensure they are correctly referenced in your environment.
+2. There are no external API Keys

@@ -7,7 +7,7 @@ const router = express.Router();
 // Add a friend by username
 router.post('/add', authenticate, async (req, res) => {
   const { username } = req.body;
-  const userId = req.user.userId; // Extracted from JWT by `authenticate` middleware
+  const userId = req.user.userId;
 
   if (!username) {
     return res.status(400).json({ message: 'Username is required.' });

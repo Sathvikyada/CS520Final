@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logout-btn");
   const friendsButton = document.getElementById("friends-btn");
 
+  const username = localStorage.getItem('username');
+  if (username) {
+    logoutButton.textContent = `Logout ${username}`;
+  }
+
   const iframe = document.getElementById("content-frame");
   const defaultMessage = document.getElementById("default-message");
 

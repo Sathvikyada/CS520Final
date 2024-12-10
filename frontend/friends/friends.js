@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Add friend logic
   document.getElementById('add-friend-btn').addEventListener('click', async () => {
-    const username = document.getElementById('friend-username').value;
+    username = document.getElementById('friend-username').value;
 
     if (!username) {
       showNotification('Please enter a username.', 'error');
