@@ -1,4 +1,4 @@
-** Nightingale - Safer Routes Web Application**
+**** Nightingale - Safer Routes Web Application****
 
 **Introduction**
 Nightingale is a web application designed to help users find safer routes around a college campus. It provides a user-friendly interface to create routes, view community chat, and manage personal preferences. The application aims to provide a sense of security by recommending routes based on safety and community input.
