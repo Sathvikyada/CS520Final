@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User'); // Make sure the path is correct
 const bcryptjs = require('bcryptjs');
 const router = express.Router();
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 // JWT secret key, stored in the environment variables
 const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';

@@ -5,11 +5,13 @@ const path = require('path')
 const authRoutes = require('./routes/auth');
 const preferencesRoutes = require('./routes/preferences');
 const eventRoutes = require('./routes/event')
+const friendsRoutes = require('./routes/friend');
+
 
 dotenv.config(); // Load environment variables
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = 4000;
 
 // Middleware
 app.use(express.json()); // To parse incoming JSON requests
@@ -33,6 +35,9 @@ app.use('/api/auth', authRoutes.router);
 app.use('/api/preferences', preferencesRoutes);
 
 app.use('/api/events', eventRoutes);
+
+app.use('/api/friends', friendsRoutes);
+
 
 // Start the server
 app.listen(port, () => {

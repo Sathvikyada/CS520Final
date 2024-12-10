@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const preferencesButton = document.getElementById("preferences-btn");
   const chatButton = document.getElementById("chat-btn");
   const logoutButton = document.getElementById("logout-btn");
+  const friendsButton = document.getElementById("friends-btn");
 
   const iframe = document.getElementById("content-frame");
   const defaultMessage = document.getElementById("default-message");
@@ -27,9 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   chatButton.addEventListener("click", () => {
-    defaultMessage.style.display = "none";  // Hide the default message
-    iframe.style.display = "block";         // Show the iframe
-    iframe.src = "../communityChat/communityChat.html"; // Load Community Chat page
+    defaultMessage.style.display = "none";
+    iframe.style.display = "block";
+    iframe.src = "../communityChat/communityChat.html";
+  });
+
+  friendsButton.addEventListener("click", () => {
+    defaultMessage.style.display = "none";
+    iframe.style.display = "block";
+    iframe.src = "../friends/friends.html";
   });
 
   logoutButton.addEventListener("click", () => {

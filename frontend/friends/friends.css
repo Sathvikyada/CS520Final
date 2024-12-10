@@ -1,0 +1,179 @@
+/* Basic reset for margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body and page layout */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Content area */
+.content {
+  text-align: center;
+  padding: 40px;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Heading styles */
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Add Friend Section */
+#add-friend-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+#friend-username {
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 350px;
+  font-size: 1rem;
+}
+
+#friend-username:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+#add-friend-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 100%;
+  max-width: 350px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+#add-friend-btn:hover {
+  background-color: #45a049;
+}
+
+#add-friend-btn:focus {
+  outline: none;
+}
+
+/* Friends List Section */
+#friends-list {
+  width: 100%;
+  max-width: 600px;
+}
+
+.friend-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.friend-card h3 {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.friend-card p {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.friend-card button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.friend-card button:hover {
+  background-color: #0056b3;
+}
+
+.friend-card button:focus {
+  outline: none;
+}
+
+/* Success/Failure Message */
+#success-message {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 300px;
+  width: 100%;
+}
+
+.success-message {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.error {
+  background-color: #f44336;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .content {
+    padding: 20px;
+  }
+
+  .content h1 {
+    font-size: 2em;
+  }
+
+  #friend-username {
+    padding: 8px;
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  #add-friend-btn {
+    padding: 12px;
+    font-size: 1.1rem;
+  }
+
+  .friend-card {
+    padding: 15px;
+    width: 100%;
+    margin: 10px 0;
+  }
+}

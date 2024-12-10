@@ -10,6 +10,7 @@ router.get('/', authenticate, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
+    // Return preferences including the phone number
     res.status(200).json({ preferences: user.preferences });
   } catch (err) {
     console.error('Error fetching preferences:', err);
@@ -19,10 +20,13 @@ router.get('/', authenticate, async (req, res) => {
 
 // Update user preferences
 router.put('/', authenticate, async (req, res) => {
-  const { emergencyContact } = req.body;
+  const { emergencyContact, phone } = req.body;
 
-  if (!emergencyContact) {
-    return res.status(400).json({ message: 'Emergency contact details are required.' });
+  // Validate required fields
+  if (!emergencyContact || !phone) {
+    return res.status(400).json({
+      message: 'Emergency contact details and phone number are required.',
+    });
   }
 
   try {
@@ -31,7 +35,11 @@ router.put('/', authenticate, async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    user.preferences.emergencyContact = emergencyContact; // Update preferences
+    // Update user preferences
+    user.preferences.emergencyContact = emergencyContact;
+    user.preferences.phone = phone;
+
+    // Save the updated user data
     await user.save();
 
     res.status(200).json({ message: 'Preferences updated successfully.' });

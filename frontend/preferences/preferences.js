@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("contact-name").value = preferences?.emergencyContact?.name || '';
       document.getElementById("contact-phone").value = preferences?.emergencyContact?.phone || '';
       document.getElementById("contact-relationship").value = preferences?.emergencyContact?.relationship || '';
+      document.getElementById("user-phone").value = preferences?.phone || '';
     } else {
       messageDiv.textContent = "Failed to load preferences.";
     }
@@ -40,6 +41,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       relationship: document.getElementById("contact-relationship").value,
     };
 
+    const userPhone = document.getElementById("user-phone").value;
+
     try {
       const token = localStorage.getItem('authToken');
       if (!token) {
@@ -53,20 +56,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ emergencyContact }),
+        body: JSON.stringify({ emergencyContact, phone: userPhone }),
       });
 
       if (response.ok) {
         messageDiv.textContent = "Preferences saved successfully.";
-        messageDiv.className = 'success';
       } else {
         messageDiv.textContent = "Failed to save preferences.";
-        messageDiv.className = 'error';
       }
     } catch (err) {
       console.error('Error saving preferences:', err);
       messageDiv.textContent = "An error occurred. Please try again.";
-      messageDiv.className = 'error';
     }
   });
 });

@@ -1,4 +1,4 @@
-**** Nightingale - Safer Routes Web Application****
+**Nightingale - Safer Routes Web Application**
 
 **Introduction**
 Nightingale is a web application designed to help users find safer routes around a college campus. It provides a user-friendly interface to create routes, view community chat, and manage personal preferences. The application aims to provide a sense of security by recommending routes based on safety and community input.
@@ -8,6 +8,7 @@ Nightingale is a web application designed to help users find safer routes around
 - Community Chat: A platform for students and faculty to discuss safety concerns and share information about routes.
 - SOS: Can call/text emergency contacts as well as contanct emergency services. Also sends out check-in reminders at random checkpoints during the route.
 - CRUD Operations: CRUD operations to the database.
+- Friends: Send out users live location before starting a route to a friend.
 
 **Installation Instructions**
 1. First, clone the repository to your local machine: git clone https://github.com/username/CS520Final.git
