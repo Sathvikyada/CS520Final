@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const preferencesRoutes = require('./routes/preferences');
 const eventRoutes = require('./routes/event')
 const friendsRoutes = require('./routes/friend');
+const routeCreatorRoutes = require('./routes/routeCreator');
 
 
 dotenv.config(); // Load environment variables
@@ -37,6 +38,8 @@ app.use('/api/preferences', preferencesRoutes);
 app.use('/api/events', eventRoutes);
 
 app.use('/api/friends', friendsRoutes);
+
+app.use('/api/routeCreator', routeCreatorRoutes);
 
 
 // Start the server
