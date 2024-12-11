@@ -6,7 +6,7 @@ Nightingale is a web application designed to help users find safer routes around
 **Key High-Level Features**
 - Route Creation: Users can create and customize routes around the campus.
 - Community Chat: A platform for students and faculty to discuss safety concerns and share information about routes.
-- SOS: Can call/text emergency contacts as well as contanct emergency services. Also sends out check-in reminders at random checkpoints during the route.
+- SOS: Can call/text emergency contacts as well as contact emergency services. Also sends out check-in reminders at random checkpoints during the route.
 - CRUD Operations: CRUD operations to the database.
 - Friends: Send out users live location before starting a route to a friend.
 
@@ -20,7 +20,7 @@ All Features Explained In Demo Video:
 
 **Configuration**
 Before running the project, configure the following settings.
-1. Ensure you have the required environment variables set up. Create a .env file in the project root and include the following keys:
+1. Ensure you have the required environment variables set up. Create a .env file in the Backend folder and include the following keys:
 - MONGO_URI=mongodb+srv://GraderAccess:GraderAccess@userdata.ilnbl.mongodb.net/?retryWrites=true&w=majority&appName=UserData  # Database URI for MongoDB
 - JWT_SECRET=jwt_secret # Secret key for JWT authentication
 
