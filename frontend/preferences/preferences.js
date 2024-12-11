@@ -4,12 +4,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Load preferences on page load
   try {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken'); // Retrieve the auth token from localStorage
     if (!token) {
+      // Redirect to login page if the token is missing
       window.location.href = '../login/login.html';
       return;
     }
 
+    // Fetch user preferences from the API
     const response = await fetch('/api/preferences', {
       method: 'GET',
       headers: {
@@ -17,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     });
 
+    // Parse and populate the preferences form with the retrieved data
     if (response.ok) {
       const { preferences } = await response.json();
       document.getElementById("contact-name").value = preferences?.emergencyContact?.name || '';
@@ -36,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   preferencesForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    // Collect form data for emergency contact and user phone
     const emergencyContact = {
       name: document.getElementById("contact-name").value,
       phone: document.getElementById("contact-phone").value,
@@ -51,6 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
+      // Save the preferences
       const response = await fetch('/api/preferences', {
         method: 'PUT',
         headers: {

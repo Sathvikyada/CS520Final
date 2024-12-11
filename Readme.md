@@ -10,6 +10,8 @@ Nightingale is a web application designed to help users find safer routes around
 - CRUD Operations: CRUD operations to the database.
 - Friends: Send out users live location before starting a route to a friend.
 
+All Features Explained In Demo Video: 
+
 **Installation Instructions**
 1. First, clone the repository to your local machine: git clone https://github.com/username/CS520Final.git
 2. After cloning the repository, navigate to the backend folder: cd backend
@@ -22,4 +24,7 @@ Before running the project, configure the following settings.
 - MONGO_URI=mongodb+srv://GraderAccess:GraderAccess@userdata.ilnbl.mongodb.net/?retryWrites=true&w=majority&appName=UserData  # Database URI for MongoDB
 - JWT_SECRET=jwt_secret # Secret key for JWT authentication
 
-2. There are no external API Keys
+2. There are no external API Keys needed to be configured
+
+**Test**
+- We have test all the database access routes. We did not test APIs such as the calling API and Google Maps API.

@@ -28,7 +28,7 @@ header {
 nav {
   display: flex;
   width: 100%;
-  max-width: 1200px; /* Optional: restrict max width */
+  max-width: 1200px;
   justify-content: space-between; /* Space out brand name and links */
   align-items: center;
 }

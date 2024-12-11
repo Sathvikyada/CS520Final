@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User'); // Ensure the path is correct
-const { authenticate } = require('./auth'); // Ensure the path is correct
+const User = require('../models/User');
+const { authenticate } = require('./auth');
 
 // Get user preferences
 router.get('/', authenticate, async (req, res) => {
   try {
+    // Capture the user
     const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
@@ -30,6 +31,7 @@ router.put('/', authenticate, async (req, res) => {
   }
 
   try {
+    // Capture the user
     const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });

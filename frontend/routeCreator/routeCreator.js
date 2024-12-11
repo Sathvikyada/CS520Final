@@ -449,7 +449,7 @@ document.getElementById("sosButton").addEventListener("click", () => {
  * The SOS is sent to the server, which relays it as an SMS using Textbelt.
  */
 async function sendSOSAlert() {
-    const sosRecipient = localStorage.getItem('emergencyphone'); // Placeholder phone number
+    const sosRecipient = localStorage.getItem('emergencyphone');
     const message = "SOS! I need help. Please track my location.";
 
     // Check if geolocation is available

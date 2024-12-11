@@ -1,12 +1,12 @@
 const express = require('express');
 const Event = require('../models/Event');
-const { authenticate } = require('./auth'); // Adjust path if necessary
+const { authenticate } = require('./auth');
 const router = express.Router();
 
 // Get all events sorted by danger status and upvotes
 router.get('/', async (req, res) => {
   try {
-    // First sort by `dangerous` (true first), then by `upvotes` descending
+    // First sort by dangerous (true first), then by upvotes descending
     const events = await Event.find().sort({ dangerous: -1, upvotes: -1 });
     res.status(200).json(events);
   } catch (err) {
@@ -32,7 +32,7 @@ router.post('/create', authenticate, async (req, res) => {
         latitude: location.latitude,
         longitude: location.longitude,
       },
-      dangerous: dangerous || false, // Default to false if not provided
+      dangerous: dangerous || false, // Default to false
     });
 
     // Save the event to the database
@@ -49,7 +49,7 @@ router.post('/create', authenticate, async (req, res) => {
 // Upvote an event
 router.post('/:eventId/upvote', authenticate, async (req, res) => {
   const { eventId } = req.params;
-  const userId = req.user.userId; // Extracted from JWT by `authenticate` middleware
+  const userId = req.user.userId; // Extracted from JWT by authenticate middleware
 
   try {
     const event = await Event.findById(eventId);

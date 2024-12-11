@@ -193,7 +193,7 @@ h1 {
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   animation: fadeInOut 5s ease-in-out forwards;
-  width: 250px; /* Optional: Adjust width for consistent sizing */
+  width: 250px;
 }
 
 .notification.success {

@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
-const { authenticate } = require('./auth'); // Assuming you already have an authentication middleware
+const { authenticate } = require('./auth');
 const axios = require('axios'); // For making HTTP requests to Textbelt
 const router = express.Router();
 
@@ -14,6 +14,7 @@ router.post('/add', authenticate, async (req, res) => {
   }
 
   try {
+    // Find the friend in the database
     const friend = await User.findOne({ username });
     if (!friend) {
       return res.status(404).json({ message: 'User not found.' });
@@ -34,7 +35,7 @@ router.post('/add', authenticate, async (req, res) => {
     user.friends.push(friend._id);
     await user.save();
 
-    // Optionally, add the user to the friend's friends list as well
+    // Add the user to the friend's friends list as well
     friend.friends.push(user._id);
     await friend.save();
 
@@ -45,12 +46,13 @@ router.post('/add', authenticate, async (req, res) => {
   }
 });
 
-// Get list of friends (including their emergency contact info)
+// Get list of friends
 router.get('/list', authenticate, async (req, res) => {
   try {
     const userId = req.user.userId;
     const user = await User.findById(userId).populate('friends', 'username preferences.phone emergencyContact'); 
 
+    // Get the list of friends
     const friends = user.friends.map(friend => ({
       username: friend.username,
       phone: friend.preferences.phone,

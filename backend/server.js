@@ -2,22 +2,24 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path')
-const authRoutes = require('./routes/auth');
-const preferencesRoutes = require('./routes/preferences');
-const eventRoutes = require('./routes/event')
-const friendsRoutes = require('./routes/friend');
-const routeCreatorRoutes = require('./routes/routeCreator');
+const authRoutes = require('./routes/auth'); // Authentication routes
+const preferencesRoutes = require('./routes/preferences'); // Preferences routes
+const eventRoutes = require('./routes/event'); // Event routes
+const friendsRoutes = require('./routes/friend'); // Friend routes
+const routeCreatorRoutes = require('./routes/routeCreator'); // Route creation routes
 
 
-dotenv.config(); // Load environment variables
+dotenv.config(); // Load environment variables from the .env file
 
 const app = express();
-const port = 4000;
+const port = 4000; // Define the port for the server
 
-// Middleware
-app.use(express.json()); // To parse incoming JSON requests
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+// Serve static files from the frontend
 app.use(express.static('../frontend'));
 
+// Serve the landing page for the root URL
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/landingPage.html'));
 });
@@ -30,7 +32,7 @@ mongoose.connect(process.env.MONGO_URI, {
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-// Use the auth routes for handling login and registration
+// Attach the routes to the express app
 app.use('/api/auth', authRoutes.router);
 
 app.use('/api/preferences', preferencesRoutes);

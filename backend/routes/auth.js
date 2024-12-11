@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Make sure the path is correct
+const User = require('../models/User');
 const bcryptjs = require('bcryptjs');
 const router = express.Router();
 const dotenv = require('dotenv');
@@ -8,12 +8,13 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // JWT secret key, stored in the environment variables
-const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
+const SECRET_KEY = process.env.JWT_SECRET || 'secret-key';
 
 // Register a new user
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
+  // Check if parameters are passed in
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required.' });
   }
@@ -32,6 +33,7 @@ router.post('/register', async (req, res) => {
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
 
+    // Send the success message or error message
     res.status(201).json({ message: 'User registered successfully.' });
   } catch (err) {
     console.error('Error registering user:', err);
@@ -43,6 +45,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+  // Check if parameters are passed in
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required." });
   }
@@ -61,7 +64,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    // Generate a JWT
+    // Generate a JWT and send success or error message
     const token = jwt.sign({ userId: user._id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
     res.status(200).json({ token, username: user.username, message: "Login successful." });
   } catch (err) {
@@ -73,6 +76,7 @@ router.post('/login', async (req, res) => {
 
 // Middleware to authenticate a user
 const authenticate = (req, res, next) => {
+  // Get the token
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(401).json({ message: 'Authentication required.' });

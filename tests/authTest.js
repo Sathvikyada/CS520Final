@@ -25,7 +25,7 @@ afterAll(async () => {
 });
 
 describe('User Authentication Routes', () => {
-  // 2.2 Test Registration
+  // Test Registration
   it('should register a new user', async () => {
     const response = await request(app)
       .post('/api/auth/register')
@@ -66,9 +66,8 @@ describe('User Authentication Routes', () => {
     expect(response.body.message).toBe('Username already exists.');
   });
 
-  // 2.3 Test Login
+  // Test Login
   it('should log in a user with correct credentials', async () => {
-    // First, create a user
     const newUser = await User.create({
       username: 'testuser',
       password: await bcrypt.hash('testpassword', 10),
@@ -109,9 +108,8 @@ describe('User Authentication Routes', () => {
     expect(response.body.message).toBe('Username and password are required.');
   });
 
-  // 2.4 Test Authentication Middleware
+  // Test Authentication Middleware
   it('should allow access to protected route with a valid token', async () => {
-    // First, create a user and log them in to get a token
     const newUser = await User.create({
       username: 'testuser',
       password: await bcrypt.hash('testpassword', 10),

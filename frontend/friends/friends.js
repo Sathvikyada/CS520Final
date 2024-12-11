@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const token = localStorage.getItem('authToken');
-  const friendListContainer = document.getElementById('friend-list');
-  const notificationContainer = document.createElement('div');
+  const token = localStorage.getItem('authToken'); // Retrieve authentication token
+  const friendListContainer = document.getElementById('friend-list'); // Container for displaying friend list
+  const notificationContainer = document.createElement('div'); // Container for notifications
   notificationContainer.id = 'notification-container';
   document.body.appendChild(notificationContainer);
 
   let locationWatchId = null; // Variable to track location sharing
 
+  // Check for valid token
   if (!token) {
     showNotification('You must be logged in to view your friends.', 'error');
     setTimeout(() => {
@@ -15,6 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+
+   // Fetches the friend list from the server and displays it.
   const fetchFriends = async () => {
     const response = await fetch('/api/friends/list', {
       headers: {
@@ -51,10 +54,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     addLocationSharingListeners();
   };
 
+  // Listeners for Start and Stop location sharing buttons
   const addLocationSharingListeners = () => {
     const shareLocationButtons = document.querySelectorAll('.start-location-sharing');
     const stopLocationButtons = document.querySelectorAll('.stop-location-sharing');
 
+    // Handle "Start Location Sharing" button click
     shareLocationButtons.forEach((button, index) => {
       button.addEventListener('click', async () => {
         const phone = button.getAttribute('data-phone');
@@ -65,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (navigator.geolocation) {
+          // Start sharing location
           locationWatchId = navigator.geolocation.watchPosition(
             async position => {
               const userLat = position.coords.latitude;
@@ -109,6 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
 
+    // Handle "Stop Location Sharing" button click
     stopLocationButtons.forEach((button, index) => {
       button.addEventListener('click', () => {
         if (locationWatchId !== null) {
@@ -156,11 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  /**
-   * Displays a notification message in the UI.
-   * @param {string} message - The notification message to display.
-   * @param {string} type - The type of notification: "success" or "error".
-   */
+   // Displays a notification message in the UI.
   function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
