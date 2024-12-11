@@ -10,7 +10,7 @@ Nightingale is a web application designed to help users find safer routes around
 - CRUD Operations: CRUD operations to the database.
 - Friends: Send out users live location before starting a route to a friend.
 
-All Features Explained In Demo Video: 
+All Features Explained In Demo Video: https://drive.google.com/file/d/1jjERnuS-CydFVUHJLZEi5XD2houqNWbI/view?usp=sharing
 
 **Installation Instructions**
 1. First, clone the repository to your local machine: git clone https://github.com/username/CS520Final.git
