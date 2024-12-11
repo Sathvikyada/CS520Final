@@ -26,5 +26,8 @@ Before running the project, configure the following settings.
 
 2. There are no external API Keys needed to be configured
 
+**Dataset Used** 
+- Location of all Emergency Boxes was taken from the UMass - UMPD site.
+
 **Test**
 - We have test all the database access routes. We did not test APIs such as the calling API and Google Maps API.
